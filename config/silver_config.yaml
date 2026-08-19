@@ -1,0 +1,16 @@
+paths:
+  bronze_root: "./data/bronze"
+  silver_root: "./data/silver"
+
+spark:
+  app_name: "SilverLayer"
+  local_master: "local[*]"
+
+write:
+  mode: "overwrite"
+
+table_registration:
+  enabled: false
+  catalog: null
+  database: null
+
