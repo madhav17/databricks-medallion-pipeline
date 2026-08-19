@@ -1,0 +1,46 @@
+---
+description: Medallion architecture responsibilities and boundaries
+alwaysApply: true
+---
+
+# Architecture
+
+Source CSV
+-> Bronze
+-> Silver
+-> Gold
+-> Dashboard
+
+## Bronze Responsibilities (Implemented)
+
+- Raw CSV ingestion with PySpark.
+- Explicit schema handling.
+- Structural input validation.
+- Parquet output storage.
+- Ingestion metadata capture.
+- Strict raw-data preservation.
+
+Bronze must not perform business cleansing, deduplication, filtering of invalid FKs, or analytical transformations.
+
+## Silver Responsibilities (Planned)
+
+- Consume Bronze Parquet datasets.
+- Perform data-quality checks:
+  - completeness checks
+  - uniqueness checks
+  - referential integrity checks
+  - business-rule checks
+- Apply required transformations/standardization.
+- Handle quality status/result tracking.
+- Manage valid/invalid records per assignment requirements.
+
+## Gold Responsibilities (Planned)
+
+- Build business-facing aggregates and KPI datasets.
+- Prepare analytics-ready outputs for dashboard consumption.
+
+## Design Boundary
+
+- Keep stage logic separated.
+- Avoid back-porting Silver/Gold logic into Bronze.
+- Preserve reproducibility and configuration-driven behavior across stages.

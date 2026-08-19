@@ -1,0 +1,54 @@
+---
+description: Project context and current stage status for the medallion assignment
+alwaysApply: true
+---
+
+# Project Context
+
+## Purpose
+
+This project implements a Databricks Medallion Architecture assessment for an e-commerce domain.  
+The pipeline progresses from generated source CSV files through Bronze, Silver, and Gold layers, then to dashboard-ready outputs.
+
+## Assignment Context
+
+- Assessment expects staged implementation, with each layer having clear responsibilities.
+- Data quality anomalies are intentionally generated in source data and preserved in Bronze for Silver processing.
+- Current repository contains completed Data Generation and Bronze implementations.
+
+## Technology Stack
+
+- Python
+- PySpark
+- Pydantic + YAML configuration
+- Pytest for tests
+- Parquet for Bronze physical storage
+- Databricks-compatible execution model
+
+## PySpark and Databricks Compatibility
+
+- Core ingestion and pipeline logic is implemented in Python + PySpark.
+- Code is designed to run both locally and in Databricks.
+- Paths and runtime behavior are configuration-driven; environment-specific values should not be hardcoded.
+
+## Local Development Requirement
+
+- Local execution should remain supported for development and validation workflows.
+- Local paths are expected to be relative to project root where possible.
+
+## Medallion Architecture
+
+Flow:
+
+Source CSV -> Bronze -> Silver -> Gold -> Dashboard
+
+## Current Project Status
+
+COMPLETED:
+- Data Generation
+- Bronze
+
+NEXT:
+- Silver
+
+Silver is not yet implemented in this repository.

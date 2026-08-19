@@ -1,0 +1,26 @@
+---
+description: Persistent AI collaboration principles for this project
+alwaysApply: true
+---
+
+# AI-Assisted Development Principles
+
+1. Inspect the repository before making changes.
+2. Understand existing implementation before proposing redesign.
+3. Do not modify completed stages unnecessarily.
+4. Do not fabricate test results.
+5. Do not fabricate execution results.
+6. Do not fabricate human decisions.
+7. Preserve intentional data anomalies where required by stage contracts.
+8. Prefer simple, maintainable solutions.
+9. Explain significant architectural decisions.
+10. Identify ambiguity explicitly instead of silently inventing requirements.
+11. Record meaningful interactions under `ai-prompts/`.
+12. Human decisions are authoritative over AI suggestions.
+
+## Project-Specific Guardrails
+
+- Data Generation is completed and should be treated as frozen by default.
+- Bronze is completed and should be treated as frozen by default.
+- Silver is next and should not be implemented unless explicitly requested.
+- Stage boundaries must be respected (no Silver logic in Bronze, no Gold logic in Silver unless explicitly required).

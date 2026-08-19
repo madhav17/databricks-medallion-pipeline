@@ -1,0 +1,61 @@
+---
+description: Frozen behavior reference for completed Bronze ingestion stage
+globs:
+  - src/bronze/**
+  - config/bronze_config.yaml
+  - ai-prompts/bronze-layer.md
+alwaysApply: false
+---
+
+# Bronze Layer (Completed and Frozen)
+
+Bronze is completed in `src/bronze/` and should be treated as frozen unless explicitly requested.
+
+## Actual Implemented Flow
+
+CSV -> PySpark -> Explicit Schema -> Structural Input Validation -> Parquet -> Bronze Dataset
+
+## Source and Output
+
+- Source files are configured through `config/bronze_config.yaml`
+- Bronze output is Parquet (not Delta)
+- Metadata output is separate (`_metadata/ingestion_metadata.parquet`)
+
+## Implemented Capabilities
+
+- Explicit schemas for `customers`, `orders`, `products`
+- Structural validation:
+  - source path exists
+  - source file readable
+  - CSV header present
+  - required columns present
+- Row-count comparison:
+  - source row count vs bronze row count
+- Post-write schema/read-back verification
+- Configurable source root and bronze root for local/Databricks compatibility
+- Idempotent overwrite-mode writes
+- Dataset-level ingestion logging and error propagation
+
+## Raw Data Preservation Contract
+
+Bronze must preserve source data including intentional anomalies:
+
+- NULL values
+- duplicate records
+- invalid foreign keys
+- other intentional source-quality issues
+
+Bronze must not:
+
+- deduplicate
+- remove/replace NULLs
+- filter invalid FKs
+- clean/correct business values
+- run Silver transformations
+- perform Gold aggregations
+
+## Execution Notes
+
+- Local execution via Bronze orchestrator script
+- Databricks compatibility via shared code path and Spark-session reuse pattern
+- Optional table registration is configuration-driven and disabled by default

@@ -1,0 +1,60 @@
+---
+description: Frozen behavior reference for completed data generation stage
+globs:
+  - src/data_generation/**
+  - config/generator_config.yaml
+  - ai-prompts/data-generation.md
+alwaysApply: false
+---
+
+# Data Generation (Completed and Frozen)
+
+Data Generation is completed in `src/data_generation/` and should be treated as frozen unless explicitly requested.
+
+## Actual Implemented Behavior
+
+- Entry point: `src/data_generation/generate_sample_data.py`
+- Config: `config/generator_config.yaml` + Pydantic models in `src/data_generation/config.py`
+- Default mode: `core`
+- Random seed: `42` (configurable)
+
+## Datasets and Row Counts
+
+- Customers: 10,000 unique IDs, 10,010 physical rows after duplicate injection
+- Orders: 100,000 unique IDs, 100,020 physical rows after duplicate injection
+- Products: 500 physical rows
+
+## Relationships
+
+- Pareto-style customer weighting for order distribution
+- Product popularity weighting
+- Configurable inactive-customer range (approx. 5-10%)
+
+## Mandatory Anomaly Strategy (Core)
+
+- Customers:
+  - 50 NULL emails
+  - 10 duplicate customer IDs (exact appended clones)
+- Orders:
+  - 100 NULL customer IDs
+  - 200 NULL product IDs
+  - 50 invalid customer FKs (orphan namespace)
+  - 30 invalid product FKs (orphan namespace)
+  - 20 duplicate order IDs (exact appended clones)
+
+## Implementation Details
+
+- Deterministic anomaly injection order with disjoint pools where practical
+- `AnomalyLedger` tracks injected anomalies and supports manifest/reporting
+- Extended anomalies are scaffolded and disabled in CORE mode by default
+
+## Validation and Reporting
+
+- Independent verification entry point: `src/data_generation/verify_dataset.py`
+- Validation reads CSV outputs directly, not just internal generator state
+- Reporting includes validation and anomaly artifacts under configured report paths
+
+## Rule for Future Work
+
+- Do not modify Data Generation implementation during Silver/Gold work unless explicitly requested.
+- If behavior docs differ from implementation, trust implementation and update docs accordingly.

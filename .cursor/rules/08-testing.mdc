@@ -1,0 +1,37 @@
+---
+description: Testing expectations across medallion stages
+globs:
+  - tests/**
+alwaysApply: false
+---
+
+# Testing Expectations
+
+## Test Scope
+
+- Unit tests for isolated logic and validation rules
+- Integration tests for stage orchestration and I/O boundaries
+- End-to-end tests for stage pipelines and expected outputs
+
+## Determinism and Fixtures
+
+- Prefer deterministic seed/config-driven tests.
+- Use focused fixtures for schema, anomaly, and row-count behavior.
+- Avoid machine-specific absolute paths in test logic.
+
+## Data and Schema Validation
+
+- Validate required schemas and data types at stage boundaries.
+- Validate expected row-count relationships where required.
+- Verify preservation of intentional anomalies for Bronze inputs/outputs.
+
+## Compatibility
+
+- Keep local execution testable where environment permits.
+- Preserve Databricks compatibility in design and test assumptions.
+
+## Regression Discipline
+
+- Add or update tests with behavior changes.
+- Do not rewrite raw Bronze data to satisfy tests.
+- Do not fabricate pass results; report actual outcomes and blockers.

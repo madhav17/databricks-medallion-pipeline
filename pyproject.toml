@@ -1,0 +1,35 @@
+[project]
+name = "databricks-medallion-pipeline"
+version = "1.0.0"
+description = "E-commerce sample data generator for Databricks Medallion Architecture"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pydantic>=2.0",
+    "pyspark>=3.5.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+generate-sample-data = "data_generation.generate_sample_data:main"
+verify-dataset = "data_generation.verify_dataset:main"
+bronze-ingest-all = "bronze.ingest_all:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

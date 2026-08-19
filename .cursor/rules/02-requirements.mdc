@@ -1,0 +1,57 @@
+---
+description: Consolidated assignment requirements reference for future stages
+alwaysApply: true
+---
+
+# Requirements Reference
+
+Use repository artifacts as source of truth, especially:
+
+- `src/data_generation/DATA_GENERATION_NOTES.md`
+- `src/bronze/BRONZE_LAYER_NOTES.md`
+- `config/generator_config.yaml`
+- `config/bronze_config.yaml`
+- `ai-prompts/data-generation.md`
+- `ai-prompts/bronze-layer.md`
+
+## Data Generation (Completed)
+
+- Deterministic generation using configuration + random seed.
+- Core dataset sizes: 10,000 unique customers, 100,000 unique orders, 500 products.
+- Exact-clone duplicate strategy and mandatory anomaly injection.
+- Invalid foreign keys use dedicated orphan ID namespaces.
+- Independent validation CLI exists.
+
+## Bronze (Completed)
+
+- Reads source CSV files and writes Parquet datasets.
+- Uses explicit schemas and structural input validation.
+- Preserves source records and intentional anomalies (no business cleansing).
+- Captures ingestion metadata separately from business datasets.
+- Uses configurable source/output roots and idempotent overwrite behavior.
+
+## Silver (Next)
+
+- Must consume Bronze Parquet.
+- Must implement data quality checks and required transformations based on assignment artifacts.
+- Must separate valid/invalid handling as required by assignment.
+
+## Gold (Future)
+
+- Must provide business aggregations and KPI-focused analytical outputs.
+
+## Testing
+
+- Maintain unit, integration, and end-to-end coverage for each stage.
+- Validate schema, row-count behavior, and deterministic behavior where applicable.
+- Do not fabricate execution or test outcomes.
+
+## Documentation
+
+- Keep stage notes and AI prompt history updated to reflect actual implementation.
+- Document real decisions, assumptions, and known limitations.
+
+## Execution Expectations
+
+- Local execution should work without Databricks-only dependencies in core logic.
+- Databricks compatibility should be preserved through configuration and Spark-session reuse.

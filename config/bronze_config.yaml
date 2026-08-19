@@ -1,0 +1,24 @@
+paths:
+  source_root: "./data"
+  bronze_root: "./data/bronze"
+
+source_files:
+  customers: "customers.csv"
+  orders: "orders.csv"
+  products: "products.csv"
+
+spark:
+  app_name: "BronzeIngestion"
+  local_master: "local[*]"
+
+write:
+  mode: "overwrite"
+
+table_registration:
+  enabled: false
+  catalog: null
+  database: null
+
+metadata:
+  directory: "_metadata"
+  file_name: "ingestion_metadata.parquet"
