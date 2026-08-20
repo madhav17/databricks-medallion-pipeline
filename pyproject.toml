@@ -20,6 +20,7 @@ generate-sample-data = "data_generation.generate_sample_data:main"
 verify-dataset = "data_generation.verify_dataset:main"
 bronze-ingest-all = "bronze.ingest_all:main"
 silver-create-tables = "silver.create_silver_tables:main"
+gold-create-tables = "gold.create_gold_tables:main"
 
 [build-system]
 requires = ["setuptools>=61"]

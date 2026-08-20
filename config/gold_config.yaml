@@ -1,0 +1,24 @@
+paths:
+  silver_root: "./data/silver"
+  gold_root: "./data/gold"
+
+spark:
+  app_name: "GoldLayer"
+  local_master: "local[*]"
+
+write:
+  mode: "overwrite"
+
+business_rules:
+  # Configurable High-Value threshold used by Customer Segmentation.
+  # Default selected as a documented business assumption; override via
+  # HIGH_VALUE_REVENUE_THRESHOLD or this config value.
+  high_value_revenue_threshold: 1000.00
+  # Realized revenue uses Completed orders only unless overridden.
+  eligible_order_statuses:
+    - Completed
+
+table_registration:
+  enabled: false
+  catalog: null
+  database: null
