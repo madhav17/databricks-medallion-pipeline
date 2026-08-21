@@ -4,11 +4,16 @@
 
 | Field | Value |
 |-------|-------|
-| Name | _Not recorded in repository_ |
-| Email | _Not recorded in repository_ |
+| Name | Madhav Khanna |
+| Email | madhav.khanna@tothenew.com |
+| Role | TL |
+| Primary Technology Stack | Python / PySpark, SQL, Databricks |
+| Primary AI Tool Used | Cursor/ChatGPT |
+| Project Option Selected | Data Pipeline (Medallion Architecture) |
+| Assessment Start Date | 10-08-2026 |
+| Submission Date | 21-08-2026 |
 | Assessment | Databricks Medallion Architecture (E-commerce) |
 | Repository | `databricks-medallion-pipeline` |
-| Submission date | _To be completed by candidate_ |
 
 ## Project Summary
 
@@ -25,3 +30,10 @@ Databricks execution.
 - AI-assisted development was used via Cursor; human review and pytest validation
   were applied before accepting generated code.
 - See `final-ai-usage-summary.md` and `ai-prompts/` for prompt history.
+
+
+## Tools & Environment
+- Databricks: Community Edition / other
+- Languages: Python, PySpark, SQL
+- Libraries: PySpark, Delta Lake, pandas
+- AI Tool: [Cursor / ChatGPT]
