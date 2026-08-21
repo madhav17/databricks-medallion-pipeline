@@ -33,7 +33,7 @@ Databricks execution.
 
 
 ## Tools & Environment
-- Databricks: Community Edition / other
+- Databricks: Community Edition / Local Mac
 - Languages: Python, PySpark, SQL
 - Libraries: PySpark, Delta Lake, pandas
 - AI Tool: [Cursor / ChatGPT]
