@@ -11,7 +11,6 @@
 
 ## Non-Goals
 
-- Daily/Weekly Trends Gold table (documented scope exclusion)
 - Local dashboard UI (Databricks SQL Dashboard is manual setup step)
 - Real PII or production data sources
 
@@ -19,14 +18,16 @@
 
 1. Completeness
 2. Uniqueness
-3. Referential Integrity
-4. Business Logic
+3. Type/schema validation
+4. Referential Integrity
+5. Business Logic
 
 ## Gold Outputs
 
 1. Sales by Product
 2. Revenue by Customer
-3. Customer Segmentation
+3. Daily/Weekly Trends
+4. Customer Segmentation
 
 ## Submission Artifacts
 

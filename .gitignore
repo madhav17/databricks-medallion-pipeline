@@ -34,17 +34,8 @@ htmlcov/
 # OS
 .DS_Store
 
-# Generated pipeline outputs and transient artifacts
-data/bronze/
-data/silver/
-data/gold/
-data/landing/
-
-# Sample synthetic CSV submission artifacts (tracked)
-!data/
-!data/customers.csv
-!data/orders.csv
-!data/products.csv
+# Generated pipeline outputs — tracked for local/submission evidence
+# (bronze/silver/gold parquet and sample CSVs under data/ are intentionally committed)
 
 # Generated reports (keep submission evidence tracked)
 reports/*

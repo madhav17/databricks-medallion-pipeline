@@ -4,10 +4,10 @@
 |-------|--------|------------------|
 | Data Generation | Complete | CSV + validation reports |
 | Bronze | Complete | Parquet + metadata |
-| Silver | Complete | Quality flags + metrics (4 checks) |
-| Gold | Complete | 3 aggregation datasets |
+| Silver | Complete | Quality flags + metrics (5 checks) |
+| Gold | Complete | 4 aggregation datasets |
 | Dashboard | Complete | SQL queries + validation |
-| Gap remediation | Complete | Business logic, database/, lifecycle docs |
+| Gap remediation | Complete | Business logic, daily/weekly trends, database/, lifecycle docs |
 | Databricks verification | Not verified | Manual steps in `database/setup-notes.md` |
 
-Daily/Weekly Trends: intentionally excluded (P3).
+Submission Cursor artifacts: `tool-specific/cursor-workflow/`.

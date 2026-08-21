@@ -1,55 +1,105 @@
 # Reflection
 
-## What Worked
+## What I Built
 
-- **Layered architecture with strict boundaries** kept Bronze raw, Silver
-  quality-focused, and Gold analytics-focused without cross-contamination.
-- **Configuration-driven paths** allowed the same Python entry points for local
-  and Databricks-oriented execution.
-- **Deterministic data generation** with a documented anomaly ledger made Silver
-  quality metrics explainable and testable.
-- **Incremental delivery** (Data Gen → Bronze → Silver → Gold → Dashboard) matched
-  assessment staging and simplified debugging.
+- A complete local Databricks-style medallion pipeline for synthetic e-commerce data:
+  **CSV → Bronze → Silver → Gold → Dashboard SQL**.
+- **Data generation** — reproducible customers (10K), orders (100K), and products (500)
+  CSVs with intentional quality anomalies (~460 documented issues).
+- **Bronze** — raw CSV ingestion to Parquet with explicit schemas, structural validation,
+  and ingestion metadata; no business cleansing.
+- **Silver** — five quality checks (completeness, uniqueness, type/schema validation,
+  referential integrity, business logic), row-level `quality_check_result` flagging,
+  and a metrics report (`quality_metrics` Parquet).
+- **Gold** — four aggregation datasets: sales by product, revenue by customer,
+  daily/weekly trends, and customer segmentation.
+- **Dashboard** — four SQL queries (three required visualizations + optional KPI) with
+  local validation via pytest.
+- **Tests and docs** — 51 pytest tests, lifecycle artifacts, AI prompt history, and
+  database setup documentation.
 
-## What Required Correction
+## How I Used AI (Across the Lifecycle)
 
-- Gold decimal casting and reconciliation logic needed refinement after first
-  pipeline run.
-- Dashboard SQL parsing required a dedicated section parser.
-- Final gap analysis identified missing submission artifacts (business logic check,
-  database docs, lifecycle documentation) rather than core pipeline logic gaps.
+1. **Requirement analysis** — used Cursor to read the assignment PDF, map ambiguities
+   (Silver check count, Gold aggregation count), and compare against repository evidence.
+2. **Architecture design** — enforced medallion boundaries through persistent Cursor
+   rules (`.cursor/rules/*.mdc`) and design notes before writing code.
+3. **Implementation** — built each layer incrementally (Data Gen → Bronze → Silver →
+   Gold → Dashboard), reusing existing patterns (YAML + Pydantic config, shared utils).
+4. **Testing** — generated and refined pytest fixtures; used AI to add integration and
+   end-to-end tests after core layers were stable.
+5. **Debugging** — used AI to diagnose decimal casting, SQL parsing, and reconciliation
+   issues; recorded fixes in `debugging-notes.md`.
+6. **Documentation** — AI drafted layer notes, lifecycle docs, and prompt history;
+   human review removed fabricated claims and marked unverified items explicitly.
+7. **Gap remediation** — final compliance audit identified the missing fourth Gold
+   aggregation (`03_daily_weekly_trends.sql`) and implemented only that gap without
+   rebuilding working layers.
 
-## AI Strengths
+## What AI Helped With Most
 
-- Rapid scaffolding following existing patterns (YAML + Pydantic, shared utils).
-- Consistent test fixture generation and documentation drafts.
-- Useful gap analysis and structured remediation plans.
+- **Scaffolding** — quickly producing module structure, config loaders, and test
+  fixtures that matched existing project conventions.
+- **Gap analysis** — systematically comparing assignment requirements to repository
+  artifacts and producing actionable remediation lists.
+- **Documentation drafts** — accelerating layer notes, data model docs, and prompt
+  history organization by activity.
+- **Test generation** — creating deterministic pytest cases for quality checks,
+  Gold reconciliation, and dashboard SQL validation.
 
-## AI Weaknesses
+## What AI Got Wrong
 
-- Occasionally proposed scope beyond assignment (e.g., extra aggregations, extra
-  quality rules) requiring human pruning.
-- Cannot verify Databricks workspace execution without actual environment access.
-- Historical prompt/decision details incomplete unless explicitly recorded.
+- **Scope creep** — sometimes proposed extra aggregations, quality rules, or refactors
+  beyond assignment requirements; required human pruning.
+- **Stale context** — early Cursor rules still said "Silver is next" after Silver was
+  implemented; rules needed manual updates as stages completed.
+- **Ambiguity handling** — initially excluded `daily_weekly_trends` based on Core
+  Acceptance Criteria alone; compliance audit corrected this after comparing Common
+  Technical Requirements and Required Repository Structure.
+- **Environment claims** — AI cannot verify Databricks workspace execution without
+  actual access; those items must remain marked "not verified."
+- **Historical prompts** — without explicit recording during early sessions, some
+  bronze/debugging prompt text is summarized rather than verbatim.
 
-## Human Validation
+## How I Validated AI Output
 
-- pytest served as the primary acceptance gate for each layer.
-- Pipeline CLI smoke runs validated row counts and reconciliation.
-- Architectural decisions (three Gold tables, no Daily/Weekly Trends, dashboard
-  filter strategy) were enforced manually.
+- **pytest** — primary acceptance gate; full suite currently **51 passed**.
+- **Pipeline CLI runs** — layer entry points (`ingest_all.py`, `create_silver_tables.py`,
+  `create_gold_tables.py`, `validate_dashboard_queries.py`) exercised locally.
+- **Reconciliation checks** — Gold pipeline validates that product, customer, and
+  segmentation revenue totals match eligible Silver order revenue.
+- **Quality metrics** — Silver tests verify intentional anomalies are flagged and
+  metrics report pass/fail percentages.
+- **No fabrication policy** — `.cursor/rules/09-ai-assisted-development.mdc` and
+  project guardrails require reporting actual test outcomes and marking unverified
+  Databricks steps explicitly.
 
-## Lessons Learned
+## What I Would Improve Next
 
-1. Record human decisions in `ai-prompts/` evaluations as work progresses.
-2. Add submission artifacts (database schema, sample CSV tracking, lifecycle docs)
-   early, not only at the end.
-3. Keep quality-check metrics aligned with assignment nomenclature (business logic
-   vs internal type validation).
+- Run the full pipeline on **Databricks Community Edition** earlier and capture
+  execution evidence (screenshots, job logs, table row counts).
+- Create the **Databricks SQL Dashboard UI** (3 tiles) and document the final dashboard URL.
+- Complete **candidate-info.md** personal submission fields before final hand-in.
+- Backfill **verbatim prompt history** for bronze and debugging sessions where only
+  summaries exist today.
+- Simplify the **CSV path convention** (`data/landing/` vs `data/`) into one documented
+  workflow to reduce setup confusion.
 
-## What Would Be Improved
+## Reusable Workflow
 
-- Run Databricks verification earlier and capture execution evidence.
-- Add full medallion integration test from the start (now added in gap remediation).
-- Reduce duplication between `data/landing` and `data/` CSV paths with a single
-  documented convention.
+1. **Set persistent context first** — `.cursor/rules/*.mdc` + `requirements-analysis.md`
+   before asking for code.
+2. **Implement one medallion layer at a time** — do not mix Silver logic into Bronze or
+   Gold logic into Silver.
+3. **Validate before accepting** — run pytest and a CLI smoke test after each AI change.
+4. **Record decisions immediately** — update `ai-prompts/<layer>.md` with prompt, AI
+   summary, what was accepted/rejected, and why.
+5. **Resolve assignment ambiguities explicitly** — prefer mandatory Common Technical
+   Requirements and Required Repository Structure over narrower acceptance-criteria wording.
+6. **Keep paths configuration-driven** — same Python entry points for local and
+   Databricks; override via YAML or environment variables.
+7. **Treat Databricks-only steps as manual verification** — do not claim dashboard or
+   workspace execution without evidence.
+
+This workflow is also summarized in `tool-workflow.md` and
+`tool-specific/cursor-workflow/cursor-rules-or-instructions.md`.

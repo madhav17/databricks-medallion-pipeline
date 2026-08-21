@@ -1,6 +1,5 @@
 # Candidate Information
 
-> Complete personal submission fields before final assessment submission.
 
 | Field | Value |
 |-------|-------|
