@@ -1694,10 +1694,18 @@ Pipeline run succeeded and type-validation metrics show zero failures.
 
 - Adjusted schema-validation order.
 - Improved test fixture typing and overwrite strategy in tests.
+- Added `05_quality_business_logic.py` in gap remediation (fourth assignment check).
 
 ### What was rejected
 
 No material AI-generated implementation was rejected.
+
+### Gap remediation (post-implementation)
+
+**Business Logic check:** ACCEPTED — implemented in `05_quality_business_logic.py`,
+integrated into orchestration and `quality_metrics` (`check_name = business_logic`).
+Rules aligned with `dataset_validator.py`. CORE dataset shows 100% business-logic
+pass rate because mandatory anomalies target completeness/uniqueness/RI only.
 
 ### Lessons Learned
 

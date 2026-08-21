@@ -34,6 +34,22 @@ htmlcov/
 # OS
 .DS_Store
 
-# Generated data-generation artifacts
-data/
-reports/
+# Generated pipeline outputs and transient artifacts
+data/bronze/
+data/silver/
+data/gold/
+data/landing/
+
+# Sample synthetic CSV submission artifacts (tracked)
+!data/
+!data/customers.csv
+!data/orders.csv
+!data/products.csv
+
+# Generated reports (keep submission evidence tracked)
+reports/*
+!reports/
+!reports/README.md
+!reports/validation_report.json
+!reports/anomaly_report.md
+!reports/anomaly_manifest.json

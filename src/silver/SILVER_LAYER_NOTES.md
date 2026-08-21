@@ -51,7 +51,40 @@ For `orders` only:
 
 Null FKs are treated as completeness failures, not referential failures.
 
-## 7. Quality Result Design
+## 7. Business Logic Rules
+
+Business logic validation is implemented in
+`src/silver/05_quality_business_logic.py` and runs after referential integrity.
+
+### Customers
+
+- `customer_segment` must be one of: Premium, Standard, Basic
+- `lifetime_value` must be non-negative when present
+- `signup_date` must not be after the configured generator end date (`2025-06-30`)
+
+### Orders
+
+- `quantity` must be positive when present
+- `unit_price` must be non-negative when present
+- `order_status` must be one of: Pending, Completed, Cancelled
+- `order_date` must not be after the configured generator end date
+- `order_date` must not precede the matched customer's `signup_date`
+- `payment_date` must not precede `order_date` when both are present
+- `Completed` orders must have a non-null `payment_date`
+- `total_amount` must equal `quantity × unit_price` rounded to two decimal places
+
+### Products
+
+- `price`, `cost`, `stock_quantity`, and `reorder_level` must be non-negative when present
+
+CORE-mode mandatory anomalies target completeness, uniqueness, and referential
+integrity. Business logic failures are therefore expected to be minimal on the
+standard generated dataset, but the check remains active for detection and
+reporting.
+
+Failures are flagged with reasons prefixed by `BUSINESS_LOGIC:`.
+
+## 8. Quality Result Design
 
 Each Silver dataset preserves business columns and adds:
 
@@ -60,12 +93,12 @@ Each Silver dataset preserves business columns and adds:
 
 An internal `quality_fail_reasons` array is used to retain multiple failures.
 
-## 8. Multiple Failure Handling
+## 9. Multiple Failure Handling
 
 All checks run and append reasons using array union semantics. A row can contain
 multiple reasons (for example completeness + uniqueness).
 
-## 9. Metrics Calculation
+## 10. Metrics Calculation
 
 Silver writes per-check metrics to `{silver_root}/quality_metrics` with:
 
@@ -79,7 +112,7 @@ Silver writes per-check metrics to `{silver_root}/quality_metrics` with:
 
 Percentages are dynamically calculated from DataFrame counts.
 
-## 10. Local Execution
+## 11. Local Execution
 
 From project root:
 
@@ -93,7 +126,7 @@ Or after editable install:
 silver-create-tables
 ```
 
-## 11. Databricks Execution
+## 12. Databricks Execution
 
 Same business logic is used on Databricks. An active SparkSession is reused
 when present. Configure Bronze/Silver roots using environment or config:
@@ -104,7 +137,7 @@ when present. Configure Bronze/Silver roots using environment or config:
 - `SILVER_SCHEMA`
 - `SILVER_TABLE_REGISTRATION_ENABLED`
 
-## 12. Configuration
+## 13. Configuration
 
 Silver configuration uses YAML + Pydantic:
 
@@ -114,7 +147,7 @@ Silver configuration uses YAML + Pydantic:
 
 Only paths/registration are environment-specific; validation logic is shared.
 
-## 13. Testing
+## 14. Testing
 
 Silver tests validate:
 
@@ -124,9 +157,10 @@ Silver tests validate:
 - quality result columns
 - metrics generation
 - row-count preservation
-- schema validation errors
+- business logic flags
+- metrics include `business_logic` for customers, orders, and products
 
-## 14. Expected Intentional Anomalies
+## 15. Expected Intentional Anomalies
 
 Customers:
 
@@ -141,7 +175,7 @@ Orders:
 - 30 invalid product IDs
 - 20 duplicate order IDs
 
-## 15. Known Assumptions
+## 16. Known Assumptions
 
 - Bronze schemas are authoritative for Silver type validation.
 - Referential checks use distinct parent key sets to avoid row multiplication

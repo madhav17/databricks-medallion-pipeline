@@ -1,0 +1,99 @@
+{
+  "generator_version": "1.0.0",
+  "generated_at_utc": "2026-08-18T09:29:42.412423+00:00",
+  "config_hash": "4bd8e0aca7a9d68f",
+  "seed": 42,
+  "mode": "core",
+  "validation_status": "PASS",
+  "datasets": {
+    "customers": {
+      "row_count": 10010,
+      "expected_row_count": 10010,
+      "unique_customer_id": 10000
+    },
+    "orders": {
+      "row_count": 100020,
+      "expected_row_count": 100020,
+      "unique_order_id": 100000
+    },
+    "products": {
+      "row_count": 500,
+      "expected_row_count": 500,
+      "unique_product_id": 500
+    }
+  },
+  "mandatory_anomalies": [
+    {
+      "anomaly_type": "null_email",
+      "expected": 50,
+      "actual": 50,
+      "status": "PASS"
+    },
+    {
+      "anomaly_type": "duplicate_customer_id",
+      "expected": 10,
+      "actual": 10,
+      "status": "PASS"
+    },
+    {
+      "anomaly_type": "null_customer_id",
+      "expected": 100,
+      "actual": 100,
+      "status": "PASS"
+    },
+    {
+      "anomaly_type": "null_product_id",
+      "expected": 200,
+      "actual": 200,
+      "status": "PASS"
+    },
+    {
+      "anomaly_type": "invalid_customer_fk",
+      "expected": 50,
+      "actual": 50,
+      "status": "PASS"
+    },
+    {
+      "anomaly_type": "invalid_product_fk",
+      "expected": 30,
+      "actual": 30,
+      "status": "PASS"
+    },
+    {
+      "anomaly_type": "duplicate_order_id",
+      "expected": 20,
+      "actual": 20,
+      "status": "PASS"
+    }
+  ],
+  "anomaly_events_by_type": {
+    "null_email": 50,
+    "null_customer_id": 100,
+    "null_product_id": 200,
+    "invalid_customer_fk": 50,
+    "invalid_product_fk": 30,
+    "duplicate_customer_id": 10,
+    "duplicate_order_id": 20
+  },
+  "total_anomaly_events": 460,
+  "unique_affected_rows": {
+    "customers": 70,
+    "orders": 420,
+    "total": 490
+  },
+  "overlapping_anomaly_rows": [],
+  "total_rows_with_anomalies": {
+    "customers": 70,
+    "orders": 420,
+    "combined": 490
+  },
+  "unexpected_anomaly_count": 0,
+  "unexpected_anomalies": [],
+  "errors": [],
+  "warnings": [],
+  "output_locations": {
+    "customers": "data/customers.csv",
+    "orders": "data/orders.csv",
+    "products": "data/products.csv"
+  }
+}

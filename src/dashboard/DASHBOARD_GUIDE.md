@@ -102,6 +102,11 @@ requirement with a simple business KPI.
 
 ## 6. Filters
 
+`src/dashboard/dashboard_queries.sql` contains **base queries without dashboard
+parameters**. This is intentional: Databricks SQL Dashboard filters are configured
+in the dashboard UI (or by replacing the query text with the parameterized wrappers
+below). Do not add unused `:parameter` placeholders to the committed base SQL.
+
 Gold does not expose an order-date field suitable for dashboard date filtering.
 Do not invent date filters from raw data.
 

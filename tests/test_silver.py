@@ -49,6 +49,7 @@ def silver_test_paths(tmp_path: Path, spark: SparkSession) -> dict[str, Path]:
         (12, 99999, date(2022, 1, 3), 2, 1, Decimal("5.00"), Decimal("5.00"), "Completed", date(2022, 1, 4)),
         (13, 1, date(2022, 1, 4), 99999, 1, Decimal("9.00"), Decimal("9.00"), "Completed", date(2022, 1, 5)),
         (14, 2, date(2022, 1, 5), None, 1, Decimal("9.00"), Decimal("9.00"), "Completed", date(2022, 1, 5)),
+        (15, 1, date(2022, 1, 6), 1, 2, Decimal("10.00"), Decimal("99.00"), "Completed", date(2022, 1, 7)),
     ]
     products_rows = [
         (1, "Widget", "Electronics", Decimal("19.99"), Decimal("10.00"), 100, 20),
@@ -96,7 +97,7 @@ def test_silver_pipeline_flags_expected_quality_issues(
 ) -> None:
     summary = run_silver_pipeline(str(silver_test_paths["config_path"]))
     assert summary["customers_rows"] == 3
-    assert summary["orders_rows"] == 5
+    assert summary["orders_rows"] == 6
     assert summary["products_rows"] == 2
 
     silver_root = silver_test_paths["silver_root"]
@@ -106,7 +107,7 @@ def test_silver_pipeline_flags_expected_quality_issues(
     metrics_df = spark.read.parquet(str(silver_root / "quality_metrics"))
 
     assert customers_df.count() == 3
-    assert orders_df.count() == 5
+    assert orders_df.count() == 6
     assert products_df.count() == 2
 
     assert "quality_check_result" in customers_df.columns
@@ -154,15 +155,26 @@ def test_silver_pipeline_flags_expected_quality_issues(
         F.col("quality_check_reason").contains("UNIQUENESS: duplicate order_id")
     ).count() == 1
 
-    assert metrics_df.count() == 8
+    assert orders_df.filter(F.col("order_id") == 15).filter(
+        F.col("quality_check_reason").contains(
+            "BUSINESS_LOGIC: total_amount != quantity * unit_price"
+        )
+    ).count() == 1
+
+    assert metrics_df.count() == 11
+    check_names = {
+        row.check_name
+        for row in metrics_df.select("check_name").distinct().collect()
+    }
+    assert "business_logic" in check_names
     orders_ref_metric = metrics_df.filter(
         (F.col("dataset_name") == "orders")
         & (F.col("check_name") == "referential_integrity")
     ).collect()[0]
-    assert orders_ref_metric.total_rows == 5
+    assert orders_ref_metric.total_rows == 6
     assert orders_ref_metric.failed_rows == 2
-    assert orders_ref_metric.passed_rows == 3
-    assert abs(orders_ref_metric.fail_percentage - 40.0) < 1e-9
+    assert orders_ref_metric.passed_rows == 4
+    assert abs(orders_ref_metric.fail_percentage - 33.333333) < 1e-5
 
 
 def test_type_validation_detects_missing_required_column(

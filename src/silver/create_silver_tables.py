@@ -31,11 +31,13 @@ completeness_module = importlib.import_module("silver.01_quality_completeness")
 uniqueness_module = importlib.import_module("silver.02_quality_uniqueness")
 type_validation_module = importlib.import_module("silver.03_quality_type_validation")
 referential_module = importlib.import_module("silver.04_quality_referential_integrity")
+business_logic_module = importlib.import_module("silver.05_quality_business_logic")
 
 apply_completeness_checks = completeness_module.apply_completeness_checks
 apply_uniqueness_checks = uniqueness_module.apply_uniqueness_checks
 validate_type_schemas = type_validation_module.validate_type_schemas
 apply_referential_integrity_checks = referential_module.apply_referential_integrity_checks
+apply_business_logic_checks = business_logic_module.apply_business_logic_checks
 
 
 @dataclass(frozen=True)
@@ -147,6 +149,11 @@ def run_silver_pipeline(config_path: str | None = None) -> dict[str, int]:
         orders_df,
         products_df,
     )
+    customers_df, orders_df, products_df = apply_business_logic_checks(
+        customers_df,
+        orders_df,
+        products_df,
+    )
 
     customers_total = _count_rows(customers_df)
     orders_total = _count_rows(orders_df)
@@ -200,6 +207,24 @@ def run_silver_pipeline(config_path: str | None = None) -> dict[str, int]:
             "type_validation",
             products_total,
             0 if type_results["products"] else products_total,
+        ),
+        _metrics_row(
+            "customers",
+            "business_logic",
+            customers_total,
+            _count_failed(customers_df, F.col("check_business_logic_failed")),
+        ),
+        _metrics_row(
+            "orders",
+            "business_logic",
+            orders_total,
+            _count_failed(orders_df, F.col("check_business_logic_failed")),
+        ),
+        _metrics_row(
+            "products",
+            "business_logic",
+            products_total,
+            _count_failed(products_df, F.col("check_business_logic_failed")),
         ),
     ]
 
