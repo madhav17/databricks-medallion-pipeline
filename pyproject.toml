@@ -21,6 +21,7 @@ verify-dataset = "data_generation.verify_dataset:main"
 bronze-ingest-all = "bronze.ingest_all:main"
 silver-create-tables = "silver.create_silver_tables:main"
 gold-create-tables = "gold.create_gold_tables:main"
+validate-dashboard-queries = "dashboard.validate_dashboard_queries:main"
 
 [build-system]
 requires = ["setuptools>=61"]
