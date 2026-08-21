@@ -14,7 +14,7 @@ CSV → Bronze → Silver → Gold → Databricks SQL Dashboard
 - Data Generation (`src/data_generation/`)
 - Bronze (`src/bronze/`)
 - Silver (`src/silver/`) — four quality checks including business logic
-- Gold (`src/gold/`) — three aggregations
+- Gold (`src/gold/`) — four aggregations (including daily/weekly trends)
 - Dashboard (`src/dashboard/`)
 
 ## Key Conventions

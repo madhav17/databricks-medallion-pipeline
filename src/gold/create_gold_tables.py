@@ -26,6 +26,7 @@ from gold.gold_utils import (
 GOLD_SQL_FILES = {
     "sales_by_product": "01_sales_by_product.sql",
     "revenue_by_customer": "02_revenue_by_customer.sql",
+    "daily_weekly_trends": "03_daily_weekly_trends.sql",
     "customer_segmentation": "04_customer_segmentation.sql",
 }
 
@@ -51,6 +52,8 @@ def _validate_dataset(df: DataFrame, dataset_name: str) -> None:
         validate_unique_keys(df, dataset_name, "product_id")
     elif dataset_name == "revenue_by_customer":
         validate_unique_keys(df, dataset_name, "customer_id")
+    elif dataset_name == "daily_weekly_trends":
+        validate_unique_keys(df, dataset_name, ["period_type", "period_start"])
     elif dataset_name == "customer_segmentation":
         validate_unique_keys(df, dataset_name, "segment_type")
 
@@ -86,6 +89,7 @@ def run_gold_pipeline(config_path: str | None = None) -> dict[str, int | float |
         "valid_products_rows": int(view_counts["valid_products_rows"]),
         "sales_by_product_rows": gold_outputs["sales_by_product"].count(),
         "revenue_by_customer_rows": gold_outputs["revenue_by_customer"].count(),
+        "daily_weekly_trends_rows": gold_outputs["daily_weekly_trends"].count(),
         "customer_segmentation_rows": gold_outputs["customer_segmentation"].count(),
         "eligible_order_revenue": float(eligible_revenue),
         "high_value_threshold": float(config.business_rules.high_value_revenue_threshold),

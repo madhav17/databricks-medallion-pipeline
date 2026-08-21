@@ -15,25 +15,49 @@ Default Silver roots come from `config/gold_config.yaml`:
 - `orders`: `{silver_root}/orders`
 - `products`: `{silver_root}/products`
 
-## 3. Three Mandatory Gold Aggregations
+## 3. Gold Aggregations
 
-Implemented Gold outputs:
+Implemented Gold outputs (four aggregation datasets):
 
 1. `sales_by_product`
 2. `revenue_by_customer`
-3. `customer_segmentation`
+3. `daily_weekly_trends`
+4. `customer_segmentation`
 
 ## 4. Daily/Weekly Trends Scope Decision
 
-The repository structure references `03_daily_weekly_trends.sql`, but the
-assignment acceptance criteria explicitly require the three mandatory Gold
-aggregation tables only.
+The assignment contains an apparent conflict:
 
-`03_daily_weekly_trends.sql` is **not implemented** in this stage because no
-existing project rule or prior human decision required it as a fourth mandatory
-Gold table.
+- **Common Technical Requirements (PDF p.4):** "Gold layer aggregation code (all 4 aggregations)"
+- **Required Repository Structure (PDF p.7):** includes `03_daily_weekly_trends.sql`
+- **Core Logic / Core Acceptance Criteria (PDF p.6):** three mandatory aggregation tables
 
-## 5. Sales by Product Logic
+**Safest submission interpretation:** implement all four repository-structure Gold
+SQL files. The three core tables satisfy acceptance criteria; the fourth satisfies
+Common Technical Requirements and the required repository artifact list.
+
+`03_daily_weekly_trends.sql` aggregates eligible Silver orders by calendar day
+and by ISO week start (`period_type` = `daily` or `weekly`).
+
+## 5. Daily/Weekly Trends Logic
+
+Source SQL: `src/gold/03_daily_weekly_trends.sql`
+
+- Source: `valid_silver_orders` only
+- Output grain: `(period_type, period_start)`
+- `period_type`:
+  - `daily` — one row per `order_date`
+  - `weekly` — one row per ISO week start (`date_trunc('week', order_date)`)
+- Metrics per period:
+  - `total_orders`
+  - `total_revenue`
+  - `avg_order_value`
+
+Daily revenue totals reconcile to eligible Silver order revenue when summed
+across daily rows. Weekly rows use a separate grain and are not included in the
+three-table revenue reconciliation check.
+
+## 6. Sales by Product Logic
 
 Source SQL: `src/gold/01_sales_by_product.sql`
 
@@ -44,7 +68,7 @@ Source SQL: `src/gold/01_sales_by_product.sql`
   - `avg_order_value = AVG(total_amount)` (NULL when no valid orders)
 - Includes products with zero valid orders via LEFT JOIN
 
-## 6. Revenue by Customer Logic
+## 7. Revenue by Customer Logic
 
 Source SQL: `src/gold/02_revenue_by_customer.sql`
 
@@ -59,7 +83,7 @@ Source SQL: `src/gold/02_revenue_by_customer.sql`
 `lifetime_value_actual` is distinct from source `lifetime_value`, which is the
 stored/expected customer lifetime value from the source customer table.
 
-## 7. Customer Segmentation Logic
+## 8. Customer Segmentation Logic
 
 Source SQL: `src/gold/04_customer_segmentation.sql`
 
@@ -72,7 +96,7 @@ Derived segment types:
 
 Segmentation is derived from actual order behavior, not source `customer_segment`.
 
-## 8. Silver Quality Filtering / Eligibility
+## 9. Silver Quality Filtering / Eligibility
 
 Gold uses Silver business-eligible records only:
 
@@ -91,7 +115,7 @@ reconcilable.
 Invalid rows remain in Silver for inspection; Gold excludes them from business
 aggregations by design.
 
-## 9. Order-Status Handling
+## 10. Order-Status Handling
 
 The assignment does not define explicit Gold revenue semantics by order status.
 
@@ -106,7 +130,7 @@ Configure via:
 - `config/gold_config.yaml` -> `business_rules.eligible_order_statuses`
 - environment variable `GOLD_ELIGIBLE_ORDER_STATUSES` (comma-separated)
 
-## 10. Duplicate Protection
+## 11. Duplicate Protection
 
 Duplicate protection rules:
 
@@ -120,19 +144,19 @@ Duplicate protection rules:
 DISTINCT/deduplication is applied only where join safety requires it and is
 documented (products dimension).
 
-## 11. NULL Handling
+## 12. NULL Handling
 
 - Revenue sums use `COALESCE(..., 0)` for zero-order groups.
 - Average order value is NULL for customers/products with zero valid orders.
 - Inactive segmentation segment uses `avg_revenue = 0` and `total_revenue = 0`.
 
-## 12. Lifetime Value Calculation
+## 13. Lifetime Value Calculation
 
 - Source `lifetime_value`: preserved in Revenue by Customer output as
   `customer_segment` context only (via source customer attributes).
 - `lifetime_value_actual`: computed as `SUM(total_amount)` from valid orders.
 
-## 13. Segmentation Rules and Precedence
+## 14. Segmentation Rules and Precedence
 
 Precedence (deterministic):
 
@@ -141,7 +165,7 @@ Precedence (deterministic):
 3. `total_orders > 1` -> `Repeat`
 4. else -> `One-Time`
 
-## 14. High-Value Threshold
+## 15. High-Value Threshold
 
 No assignment-defined numeric threshold was found in existing project artifacts.
 
@@ -241,5 +265,6 @@ Default local outputs:
 data/gold/
   sales_by_product/
   revenue_by_customer/
+  daily_weekly_trends/
   customer_segmentation/
 ```

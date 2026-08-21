@@ -9,6 +9,7 @@ from pathlib import Path
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.types import (
+    DateType,
     IntegerType,
     LongType,
     StringType,
@@ -33,6 +34,7 @@ QUALITY_PASS_VALUE = "PASS"
 GOLD_DATASETS = (
     "sales_by_product",
     "revenue_by_customer",
+    "daily_weekly_trends",
     "customer_segmentation",
 )
 
@@ -59,6 +61,16 @@ REVENUE_BY_CUSTOMER_SCHEMA = StructType(
     ]
 )
 
+DAILY_WEEKLY_TRENDS_SCHEMA = StructType(
+    [
+        StructField("period_type", StringType(), nullable=False),
+        StructField("period_start", DateType(), nullable=False),
+        StructField("total_orders", LongType(), nullable=False),
+        StructField("total_revenue", MONETARY_DECIMAL, nullable=False),
+        StructField("avg_order_value", MONETARY_DECIMAL, nullable=True),
+    ]
+)
+
 CUSTOMER_SEGMENTATION_SCHEMA = StructType(
     [
         StructField("segment_type", StringType(), nullable=False),
@@ -71,6 +83,7 @@ CUSTOMER_SEGMENTATION_SCHEMA = StructType(
 GOLD_SCHEMAS: dict[str, StructType] = {
     "sales_by_product": SALES_BY_PRODUCT_SCHEMA,
     "revenue_by_customer": REVENUE_BY_CUSTOMER_SCHEMA,
+    "daily_weekly_trends": DAILY_WEEKLY_TRENDS_SCHEMA,
     "customer_segmentation": CUSTOMER_SEGMENTATION_SCHEMA,
 }
 
@@ -204,13 +217,19 @@ def validate_output_schema(df: DataFrame, dataset_name: str) -> None:
             )
 
 
-def validate_unique_keys(df: DataFrame, dataset_name: str, key_column: str) -> None:
+def validate_unique_keys(
+    df: DataFrame,
+    dataset_name: str,
+    key_column: str | list[str],
+) -> None:
     total_rows = df.count()
-    distinct_keys = df.select(key_column).distinct().count()
+    key_columns = [key_column] if isinstance(key_column, str) else key_column
+    distinct_keys = df.select(*key_columns).distinct().count()
     if total_rows != distinct_keys:
+        key_label = ", ".join(key_columns)
         raise GoldError(
             f"Gold dataset '{dataset_name}' contains duplicate values in "
-            f"'{key_column}': rows={total_rows}, distinct={distinct_keys}"
+            f"'{key_label}': rows={total_rows}, distinct={distinct_keys}"
         )
 
 

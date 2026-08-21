@@ -60,8 +60,9 @@ Schemas are authoritative in `src/bronze/schemas.py` and `database/schema.sql`.
 
 | Dataset | Grain | Key columns |
 |---------|-------|-------------|
-| sales_by_product | product_id | total_revenue, order_count, ... |
-| revenue_by_customer | customer_id | total_revenue, order_count, ... |
-| customer_segmentation | segment_type | customer_count, total_revenue, ... |
+| sales_by_product | product_id | total_revenue, total_orders, avg_order_value |
+| revenue_by_customer | customer_id | total_revenue, total_orders, lifetime_value_actual |
+| daily_weekly_trends | period_type, period_start | total_revenue, total_orders, avg_order_value |
+| customer_segmentation | segment_type | customer_count, total_revenue, avg_revenue |
 
 See `src/gold/GOLD_LAYER_NOTES.md` for full output schemas.

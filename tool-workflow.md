@@ -37,7 +37,7 @@ document summarizes process only.
 
 | Decision | Status | Reference |
 |----------|--------|-----------|
-| Gold limited to three mandatory aggregations (no Daily/Weekly Trends) | ACCEPTED | `src/gold/GOLD_LAYER_NOTES.md`, `requirements-analysis.md` |
+| Gold includes four aggregations per Common Technical Requirements | ACCEPTED | `src/gold/GOLD_LAYER_NOTES.md`, `requirements-analysis.md` |
 | Dashboard reads Gold, not Silver/Bronze | ACCEPTED | `src/dashboard/DASHBOARD_GUIDE.md` |
 | Same business logic local and Databricks | ACCEPTED | Layer notes across Bronze–Dashboard |
 | Separate `ai-prompts/` file per layer | ACCEPTED | `ai-prompts/` directory structure |
@@ -45,6 +45,22 @@ document summarizes process only.
 
 Decisions not recorded in repository history are marked explicitly in individual
 `ai-prompts/*.md` evaluation sections.
+
+## Part A Checklist (Assignment PDF §6)
+
+| Topic | How it was addressed |
+|-------|----------------------|
+| Primary AI tool | Cursor (see `candidate-info.md`, `.cursor/rules/`) |
+| Project context | Persistent `.cursor/rules/*.mdc`, `.cursor/project-spec.md` |
+| Requirement analysis | `requirements-analysis.md`, assignment PDF cross-check |
+| Pipeline design | `design-notes.md`, layer notes, architecture rules |
+| Code generation | Layer-by-layer implementation with pytest validation |
+| Validation of AI output | pytest suite, CLI smoke runs, reconciliation checks |
+| Testing / debugging | `tests/`, `debugging-notes.md`, `ai-prompts/debugging.md` |
+| Data quality checks | Silver metrics + `data-quality-strategy.md` |
+| PII avoidance | Synthetic data only; no real customer PII in repo or prompts |
+| Production reuse | Config-driven paths, shared local/Databricks logic, idempotent writes |
+| Lessons learned | `reflection.md`, `final-ai-usage-summary.md` |
 
 ## Validation Discipline
 

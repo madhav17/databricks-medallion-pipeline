@@ -340,10 +340,11 @@ explicitly configure a dashboard parameter across all tiles.
 
 ## 14. Daily/Weekly Trends Note
 
-The repository structure references `03_daily_weekly_trends.sql`, but the current
-Gold implementation provides only the three mandatory aggregation tables. The
-dashboard therefore does not expose Daily/Weekly Trends unless that Gold dataset
-is added in a future stage.
+Gold now includes `daily_weekly_trends` (`src/gold/03_daily_weekly_trends.sql`).
+An optional dashboard line chart can be added from that dataset using
+`period_start` on the X-axis and `total_revenue` on the Y-axis, filtered by
+`period_type` (`daily` or `weekly`). The three required dashboard visualizations
+remain the bar, histogram, and pie charts documented above.
 
 ## 15. Architecture Boundary
 

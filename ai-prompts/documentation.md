@@ -39,6 +39,43 @@ Created lifecycle docs from repository evidence (layer notes, tests, configs,
 
 ---
 
+## Prompt: Final Assignment Compliance Audit (2026-08-21)
+
+**PROMPT SENT:**
+
+Final assignment compliance audit against `ai-prompts/DE_C1_Coding_Evaluation.pdf`.
+Compare PDF requirements to repository implementation; implement only genuine gaps;
+run tests; produce compliance report. Resolve Silver/Gold count ambiguities from
+PDF wording (Common Technical Requirements vs Core Acceptance Criteria vs Required
+Repository Structure).
+
+**AI RESPONSE SUMMARY:**
+
+Audit identified one code gap: missing `03_daily_weekly_trends.sql` (Gold fourth
+aggregation required by Common Technical Requirements and Required Repository
+Structure). Implemented SQL, Gold orchestration, schema validation, tests, and
+updated ambiguity documentation. Silver already exceeded four-check minimum (five
+checks including type_validation and business_logic). Full pytest: 51 passed.
+
+**YOUR EVALUATION:**
+
+### What was good
+
+- Gap limited to Gold fourth aggregation; no unnecessary rebuild of working layers.
+- Ambiguity resolution documented in `requirements-analysis.md` and `GOLD_LAYER_NOTES.md`.
+
+### What needed fixing
+
+- Historical `ai-prompts/gold-layer.md` entries still describe trends as not implemented
+  (prior session record; superseded by this implementation).
+
+### Human decision
+
+**ACCEPTED** — implement fourth Gold aggregation per Common Technical Requirements
+and Required Repository Structure; preserve three core tables for acceptance criteria.
+
+---
+
 ## Prompt: README End-to-End Setup
 
 **PROMPT SENT:**

@@ -70,7 +70,7 @@ PYTHONPATH=src python src/gold/create_gold_tables.py
 
 Or: `gold-create-tables`
 
-Output: `./data/gold/` (three aggregation datasets)
+Output: `./data/gold/` (four aggregation datasets)
 
 ### 6. Validate dashboard SQL
 

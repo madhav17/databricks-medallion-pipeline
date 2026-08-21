@@ -149,12 +149,14 @@ def test_gold_pipeline_produces_expected_aggregations(
     assert summary["valid_orders_rows"] == 5
     assert summary["sales_by_product_rows"] == 4
     assert summary["revenue_by_customer_rows"] == 4
+    assert summary["daily_weekly_trends_rows"] > 0
     assert summary["customer_segmentation_rows"] == 4
     assert summary["eligible_order_revenue"] == pytest.approx(1220.0)
 
     gold_root = gold_test_paths["gold_root"]
     sales_df = spark.read.parquet(str(gold_root / "sales_by_product"))
     revenue_df = spark.read.parquet(str(gold_root / "revenue_by_customer"))
+    trends_df = spark.read.parquet(str(gold_root / "daily_weekly_trends"))
     segmentation_df = spark.read.parquet(str(gold_root / "customer_segmentation"))
 
     sales = _collect_map(
@@ -203,6 +205,15 @@ def test_gold_pipeline_produces_expected_aggregations(
     assert segments["Inactive"]["customer_count"] == 1
     assert segments["Inactive"]["total_revenue"] == Decimal("0.00")
     assert segments["Inactive"]["avg_revenue"] == Decimal("0.00")
+
+    daily_trends = trends_df.filter(F.col("period_type") == "daily")
+    weekly_trends = trends_df.filter(F.col("period_type") == "weekly")
+    assert daily_trends.count() == 5
+    assert weekly_trends.count() >= 1
+    daily_revenue_total = daily_trends.agg(
+        F.sum("total_revenue").alias("total_revenue")
+    ).collect()[0].total_revenue
+    assert daily_revenue_total == Decimal("1220.00")
 
 
 def test_gold_pipeline_is_idempotent(

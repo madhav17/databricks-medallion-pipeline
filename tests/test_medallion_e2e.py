@@ -161,6 +161,7 @@ def test_medallion_pipeline_csv_to_dashboard(
     gold_summary = run_gold_pipeline(str(medallion_paths["gold_config_path"]))
     assert gold_summary["sales_by_product_rows"] > 0
     assert gold_summary["revenue_by_customer_rows"] > 0
+    assert gold_summary["daily_weekly_trends_rows"] > 0
     assert gold_summary["customer_segmentation_rows"] > 0
 
     gold_config = load_gold_config(str(medallion_paths["gold_config_path"]))
