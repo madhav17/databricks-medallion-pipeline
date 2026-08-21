@@ -10,7 +10,7 @@
 | Primary AI Tool Used | Cursor/ChatGPT |
 | Project Option Selected | Data Pipeline (Medallion Architecture) |
 | Assessment Start Date | 10-08-2026 |
-| Submission Date | 22-08-2026 |
+| Submission Date | 21-08-2026 |
 | Assessment | Databricks Medallion Architecture (E-commerce) |
 | Repository | `databricks-medallion-pipeline` |
 
